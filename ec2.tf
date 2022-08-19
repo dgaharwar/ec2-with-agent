@@ -78,7 +78,6 @@ resource "aws_instance" "ec2" {
    EOF
    
   tags = {
-    Name = "<%=instance.name%>"
     PowerSchedule = local.ec2_power_schedule
     }
 }
