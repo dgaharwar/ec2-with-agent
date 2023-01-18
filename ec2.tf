@@ -5,6 +5,7 @@
 variable "region" {}
 variable "access_key" {}
 variable "secret_key" {}
+
 variable "instance_name" {}
 
 variable "instance_type" {
@@ -30,6 +31,10 @@ variable "key_name" {
 }
 variable "power_schedule" {
     default = "on"
+}
+
+variable "morpheususer" {
+    default = "<%=morpheus.morpheusUser%>"
 }
 
 locals {
@@ -58,10 +63,17 @@ resource "aws_instance" "ec2" {
     ami                     = var.ami
     subnet_id               = data.aws_subnet.subnet.id
     vpc_security_group_ids  = [var.security_groups]
-    user_data               = file("./userdata.sh")
+#    user_data               = file("./userdata.sh")
     key_name                = var.key_name
+    user_data               = <<-EOF
+                            #cloud-config
+                            runcmd:
+                            - <%=instance.cloudConfig.agentInstall%>
+                            - <%=instance.cloudConfig.finalizeServer%>
+                            EOF
     tags = {
         Name          = var.instance_name
+        morph_user    = var.morpheususer
         PowerSchedule = local.ec2_power_schedule
     }
 }
