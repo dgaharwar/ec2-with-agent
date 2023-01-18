@@ -1,8 +1,6 @@
 # This template is designed for deploying an EC2 instance from the Morpheus UI.
 
-################################
-##         Variables          ##
-################################
+########### Variables ############
 
 variable "region" {}
 variable "access_key" {}
@@ -16,7 +14,7 @@ variable "ami" {
     default = "ami-08d4ac5b634553e16"
 }
 variable "vpc" {
-  default = "vpc-33ac354e"
+    default = "vpc-33ac354e"
 }
 
 variable "availability_zone" {
@@ -24,27 +22,26 @@ variable "availability_zone" {
 }
 
 variable "security_groups" {
-  default = "sg-2b299333"
+    default = "sg-2b299333"
 }
 variable "key_name" {
-  default = "MorpheusApp"
+    default = "EC2KeyPair"
 }
 variable "power_schedule" {
-  default = "on"
+    default = "on"
 }
 
 locals {
-  ec2_power_schedule = var.power_schedule
+    ec2_power_schedule = var.power_schedule
 }
 
 data "aws_subnet" "subnet" {
-  availability_zone = var.availability_zone
-  vpc_id            = var.vpc
+    availability_zone = var.availability_zone
+    vpc_id            = var.vpc
 }
 
-#################################
-##          Provider           ##
-#################################
+
+########### Provider ###########
 
 provider "aws" {
     region = var.region
@@ -52,18 +49,17 @@ provider "aws" {
     secret_key = var.secret_key
 }
 
-#################################
-##           Resources         ##
-#################################
+
+########### Resources ###########
 
 resource "aws_instance" "ec2" {
-  instance_type           = var.instance_type
-  ami                     = var.ami
-  subnet_id               = data.aws_subnet.subnet.id
-  vpc_security_group_ids  = [var.security_groups]
-  user_data               = file("./userdata.sh")
-  key_name                = var.key_name
-  tags = {
-    PowerSchedule = local.ec2_power_schedule
+    instance_type           = var.instance_type
+    ami                     = var.ami
+    subnet_id               = data.aws_subnet.subnet.id
+    vpc_security_group_ids  = [var.security_groups]
+    user_data               = file("./userdata.sh")
+    key_name                = var.key_name
+    tags = {
+        PowerSchedule = local.ec2_power_schedule
     }
 }
