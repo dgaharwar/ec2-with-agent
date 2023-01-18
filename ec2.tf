@@ -61,15 +61,8 @@ resource "aws_instance" "ec2" {
   ami                     = var.ami
   subnet_id               = data.aws_subnet.subnet.id
   vpc_security_group_ids  = [var.security_groups]
+  user_data               = file("./userdata.sh")
   key_name                = var.key_name
-  user_data                   = <<-EOF
-   #! /bin/bash
-    API_KEY = "<%=server.apiKey%>"
-    MORPH_URI = "<%=morpheus.applianceUrl%>"
-    curl -k -s "${MORPH_URI}/api/server-script/agentInstall?apiKey=${API_KEY}" | bash
-   
-   EOF
-   
   tags = {
     PowerSchedule = local.ec2_power_schedule
     }
