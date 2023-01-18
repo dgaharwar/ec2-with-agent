@@ -5,6 +5,7 @@
 variable "region" {}
 variable "access_key" {}
 variable "secret_key" {}
+variable "instance_name" {}
 
 variable "instance_type" {
     default = "t2.micro"
@@ -60,6 +61,7 @@ resource "aws_instance" "ec2" {
     user_data               = file("./userdata.sh")
     key_name                = var.key_name
     tags = {
+        Name          = var.instance_name
         PowerSchedule = local.ec2_power_schedule
     }
 }
