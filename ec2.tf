@@ -39,6 +39,9 @@ variable "morpheususer" {
 
 locals {
     ec2_power_schedule = var.power_schedule
+    common_tags {
+        appName = "<%=customOptions.wuApplicationName.tokenize('|')[4].replaceAll("\\s","").toLowerCase()%>"
+    }
 }
 
 data "aws_subnet" "subnet" {
