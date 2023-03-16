@@ -36,8 +36,12 @@ variable "morpheususer" {
 }
 
 locals {
+    commom_tags {
+    appName            = ${"<%=customOptions.wuApplicationName.tokenize('|')[4].replaceAll("\\s","").toLowerCase()%>"}
+    Name               = "<%=instance.name>%"
+    morph_user         = var.morpheususer
     ec2_power_schedule = var.power_schedule
-    appName = ${"<%=customOptions.wuApplicationName.tokenize('|')[4]%>"}
+  }
 }
 
 data "aws_subnet" "subnet" {
@@ -70,10 +74,6 @@ resource "aws_instance" "ec2" {
                             - <%=instance.cloudConfig.agentInstall%>
                             - <%=instance.cloudConfig.finalizeServer%>
                             EOF
-    tags = {
-        Name          = local.appName
-        morph_user    = var.morpheususer
-        PowerSchedule = local.ec2_power_schedule
-        AppName       = local.appName
-    }
+    
+    tags = local.common_tags
 }
