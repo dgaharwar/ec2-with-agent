@@ -37,7 +37,7 @@ variable "morpheususer" {
 
 locals {
     commom_tags {
-    appName            = ${"<%=customOptions.wuApplicationName.tokenize('|')[4].replaceAll("\\s","").toLowerCase()%>"}
+    appName            = "<%=customOptions.wuApplicationName%>"
     Name               = "<%=instance.name>%"
     morph_user         = var.morpheususer
     ec2_power_schedule = var.power_schedule
