@@ -6,8 +6,6 @@ variable "region" {}
 variable "access_key" {}
 variable "secret_key" {}
 
-variable "instance_name" {}
-
 variable "instance_type" {
     default = "t2.micro"
 }
@@ -39,7 +37,7 @@ variable "morpheususer" {
 
 locals {
     ec2_power_schedule = var.power_schedule
-    appName = "<%=customOptions.wuApplicationName.tokenize('|')[4]%>"
+    appName = ${"<%=customOptions.wuApplicationName.tokenize('|')[4]%>"}
 }
 
 data "aws_subnet" "subnet" {
@@ -73,7 +71,7 @@ resource "aws_instance" "ec2" {
                             - <%=instance.cloudConfig.finalizeServer%>
                             EOF
     tags = {
-        Name          = var.instance_name
+        Name          = local.appName
         morph_user    = var.morpheususer
         PowerSchedule = local.ec2_power_schedule
         AppName       = local.appName
